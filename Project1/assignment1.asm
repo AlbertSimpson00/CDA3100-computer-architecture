@@ -101,17 +101,35 @@ student_code:
 		
 	# first if statement
 	blt     $a1, $zero, error  	# if n < 0
-	bgt     $a1, 100, error		# if n > 100
+	li 	$t0, 100		# load immidiate temp value to be used in branch statement
+	bgt     $a1, $t0, error		# if n > 100
+	
 	
 	# second set of if statments, tri branching
-	blt 	$a1, 2, notprime	# if n < 2 (handles inputs 0 and 1 for notprime)
+	li	$t0, 2			# overwrite temp register $t0 with 2 instead for second set of branching
+	blt 	$a1, $t0, notprime	# if n < 2 (handles inputs 0 and 1 for notprime)
+	beq 	$a1, $t0, isprime		# odd case where 2 is the only even number so we make a specific case
+	
 	
 	# else if branc for input % 2 == 0 != 2, i.e. even numbers that's not 2... notprime
 	li	$t2, 2
 	div 	$a1, $t2
 	mfhi 	$t2			# moves the remainder(hi) from div to $t2
-	bne 	$a1, 2, notprime
 	beq  	$t2, $zero, notprime	# if remainder from modulo stored in $t2 equals 0 (input % 2 == 0)
 	
+	# values before for loop
+	calc_sqrt ($a1)			# stores result in $f2 floater register for the "sqrt(input) for branching"
+	li 	$t3, 3			# eqv to "int x = 3" inside for loop
+	
+	for_loop:
 	# else statement (for loop)
+	slt_sqrt ($t3)			# compares if $t3 is less than $f2
+	beq 	$v1, $zero, isprime
+	
+	
+	beq	$t3, $zero, notprime
+	
+	addi $t3, $t3, 2			# loop incrementer x += 2 or x = x + 2
+	leave_for_loop:	
+	
 	
