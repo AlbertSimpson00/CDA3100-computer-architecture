@@ -111,32 +111,30 @@ student_code:
 	bgt     $a1, $t0, error		# if n > 100
 	j main_prime_test
 	
-	
 	# === Extra Credits ===
 	# ec_start only for initializing
 	ec_start:
-	li $s0, 1			# Sets key to EC
+	li $s0, 1			# Sets key to 1 = EC
 	li $t5, 0			# Incrementer to run from 0 to 100
 	
 	ec_loop:
 	li 	$t0, 100
 	bgt 	$t5, $t0, exit_program
-	add 	$a1, $t5, $zero		# Sets the EC incrementer to $a1 argument value since main prime checker uses $a1 register
+	add 	$a1, $t5, $zero		# Sets the EC incrementer to $a1 argument value since original implementation uses input $a1 argument value. Add $a1 = $t5 + 0 -> $a1 = $t5
 	j main_prime_test
 	
-	ec_increment:
+	ec_increment:			#Incrementer label from 0 to 100 for EC
 	addi $t5, $t5, 1
 	j ec_loop
 	
 	# === Extra Credits END ===
 
 	# ====== Main code logic ======
-	
 	main_prime_test:
-	# second set of if statments, tri branching
+	# second set of if statments
 	li	$t0, 2			# overwrite temp register $t0 with 2 instead for second set of branching
 	blt 	$a1, $t0, prime_false	# if n < 2 (handles inputs 0 and 1 for notprime)
-	beq 	$a1, $t0, prime_true	# odd case where 2 is the only even number so we make a specific case
+	beq 	$a1, $t0, prime_true	# odd case where 2 is the only even number so using a specific case
 	
 	
 	# else if branc for input % 2 == 0 != 2, i.e. even numbers that's not 2... notprime
@@ -145,10 +143,9 @@ student_code:
 	mfhi 	$t2			# moves the remainder(hi) from div to $t2
 	beq  	$t2, $zero, prime_false	# if remainder from modulo stored in $t2 equals 0 (input % 2 == 0)
 	
-	#
 	# initialize values before for loop
 	calc_sqrt ($a1)			# stores result in $f2 floater register for the "sqrt(input) for branching"
-	li 	$t3, 3			# eqv to "int x = 3" inside for loop
+	li 	$t3, 3			# eqv to "int x = 3" inside for loop in C code
 	
 	for_loop:
 	# else statement (for loop)
