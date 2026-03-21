@@ -125,8 +125,8 @@ getMax:
 	add $t2, $a0, $t1		# get the address of array[x]
 	lw $t3, 0($t2)			# load current value of array[0]
 	
-	ble $t3, $v0, getMax_next	# if current value <= max, we skip the update
-	add $v0, $t3, $zero		# updates max to the current value
+	ble $t3, $v0, getMax_next	# if current value less than max, we skip the update
+	add $v0, $t3, $zero		# updates max to the current value, $v0 = current value + 0
 	
 	getMax_next:
 	addi $t0, $t0, 1		# x++
@@ -142,7 +142,25 @@ getMax:
 # $a1 - Size of the array (number of values)
 # Result MUST be stored in register $v0
 getMin:
+
+	lw $v0, 0($a0)			# stores min as first element of array, min = array[0]
+	li $t0, 1			# x = 1, temp value for loop incrementer
 	
+	getMin_loop:
+	bge $t0, $a1, getMin_done	# loop condition
+	
+	sll $t1, $t0, 2			# get correct memory position for
+	add $t2, $a0, $t1		# get the address of array[x]
+	lw $t3, 0($t2)			# load current value of array[0]
+	
+	bge $t3, $v0, getMin_next	# if current value greater than max, we skip the update
+	add $v0, $t3, $zero		# updates max to the current value
+	
+	getMin_next:
+	addi $t0, $t0, 1		# x++
+	j getMin_loop
+	
+	getMin_done:
 	jr $ra	# Return to calling procedure
 
 ########################################################
