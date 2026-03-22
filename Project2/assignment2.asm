@@ -104,6 +104,19 @@ student_code:
 # $a1 - Size of the array (number of values)
 # Result MUST be stored in floating-point register $f2
 calcAverage:
+
+	addi $sp, $sp, -12	# reserves space on stack
+	sw $ra, 0($sp)		# save return adress of the array
+	sw $a0, 4($sp)		# save array address
+	sw $a1, 8($sp)		# saves the size
+	
+	jal calcSum 		# calls the calcSum "method" and gets the sum of array
+	
+	lw $a1, 8($sp)		# get size back
+	fp_div($f2, $v0, $a1) 	# macro for sum / size = avg
+	
+	lw $ra, 0($sp)		# restore the return adress
+	addi $sp, $sp, 12	# clear the stack
 	
 	jr $ra	# Return to calling procedure
 	
